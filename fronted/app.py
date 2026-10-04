@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 
-
 # =========================================================
 # PAGE CONFIG
 # =========================================================
@@ -12,7 +11,6 @@ st.set_page_config(
     layout="wide"
 )
 
-
 # =========================================================
 # CUSTOM CSS
 # =========================================================
@@ -20,31 +18,53 @@ st.set_page_config(
 st.markdown("""
 <style>
 
+.stApp {
+    background-color: #f5f7fb;
+}
+
+/* Main title */
 .main-title {
     font-size: 42px;
-    font-weight: 700;
+    font-weight: 800;
     text-align: center;
+    color: #172033;
     margin-bottom: 5px;
 }
 
+/* Subtitle */
 .subtitle {
     text-align: center;
-    color: #666;
+    color: #687386;
     font-size: 18px;
     margin-bottom: 30px;
 }
 
-.prediction-box {
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    border: 1px solid #ddd;
-    margin-top: 20px;
+/* Section title */
+.section-title {
+    font-size: 25px;
+    font-weight: 700;
+    color: #172033;
 }
 
-.prediction-value {
-    font-size: 42px;
-    font-weight: 700;
+/* Prediction metrics */
+[data-testid="stMetric"] {
+    background-color: #eef8f2;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+/* Button */
+div.stButton > button {
+    width: 100%;
+    height: 48px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background-color: #ffffff;
 }
 
 </style>
@@ -52,7 +72,7 @@ st.markdown("""
 
 
 # =========================================================
-# TITLE
+# HEADER
 # =========================================================
 
 st.markdown(
@@ -61,7 +81,9 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="subtitle">Predict daily bike rental demand using Machine Learning</div>',
+    '<div class="subtitle">'
+    'Predict daily bike rental demand using Machine Learning'
+    '</div>',
     unsafe_allow_html=True
 )
 
@@ -70,7 +92,10 @@ st.markdown(
 # BACKEND URL
 # =========================================================
 
-API_URL = "http://127.0.0.1:8000/predict"
+API_URL = (
+    "https://bike-sharing-predicter-backend-dhuhvepp8-"
+    "rat7050s-projects.vercel.app/predict"
+)
 
 
 # =========================================================
@@ -90,7 +115,9 @@ model = st.sidebar.selectbox(
 )
 
 
-# Convert frontend name to backend value
+# =========================================================
+# MODEL MAPPING
+# =========================================================
 
 model_mapping = {
     "Multiple Linear Regression": "linear",
@@ -106,103 +133,127 @@ selected_model = model_mapping[model]
 # INPUT SECTION
 # =========================================================
 
-st.subheader("📊 Enter Bike Sharing Information")
+st.markdown(
+    '<div class="section-title">'
+    '📊 Enter Bike Sharing Information'
+    '</div>',
+    unsafe_allow_html=True
+)
 
-col1, col2 = st.columns(2)
+st.write("")
 
 
 # =========================================================
-# COLUMN 1
+# INPUT COLUMNS
+# =========================================================
+
+col1, col2 = st.columns(2, gap="large")
+
+
+# =========================================================
+# COLUMN 1 - DATE INFORMATION
 # =========================================================
 
 with col1:
 
-    season = st.selectbox(
-        "Season",
-        options=[1, 2, 3, 4],
-        help="1: Spring, 2: Summer, 3: Fall, 4: Winter"
-    )
+    with st.container(border=True):
 
-    yr = st.selectbox(
-        "Year",
-        options=[0, 1],
-        format_func=lambda x: "2011" if x == 0 else "2012"
-    )
+        st.subheader("📅 Date Information")
 
-    mnth = st.selectbox(
-        "Month",
-        options=list(range(1, 13))
-    )
+        season = st.selectbox(
+            "Season",
+            options=[1, 2, 3, 4],
+            help="1: Spring, 2: Summer, 3: Fall, 4: Winter"
+        )
 
-    holiday = st.selectbox(
-        "Holiday",
-        options=[0, 1],
-        format_func=lambda x: "No" if x == 0 else "Yes"
-    )
+        yr = st.selectbox(
+            "Year",
+            options=[0, 1],
+            format_func=lambda x: "2011" if x == 0 else "2012"
+        )
 
-    weekday = st.selectbox(
-        "Weekday",
-        options=list(range(7)),
-        format_func=lambda x: [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday"
-        ][x]
-    )
+        mnth = st.selectbox(
+            "Month",
+            options=list(range(1, 13))
+        )
+
+        holiday = st.selectbox(
+            "Holiday",
+            options=[0, 1],
+            format_func=lambda x: "No" if x == 0 else "Yes"
+        )
+
+        weekday = st.selectbox(
+            "Weekday",
+            options=list(range(7)),
+            format_func=lambda x: [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+            ][x]
+        )
 
 
 # =========================================================
-# COLUMN 2
+# COLUMN 2 - WEATHER INFORMATION
 # =========================================================
 
 with col2:
 
-    workingday = st.selectbox(
-        "Working Day",
-        options=[0, 1],
-        format_func=lambda x: "No" if x == 0 else "Yes"
-    )
+    with st.container(border=True):
 
-    weathersit = st.selectbox(
-        "Weather Situation",
-        options=[1, 2, 3, 4],
-        help="1: Clear, 2: Mist, 3: Light Rain/Snow, 4: Heavy Rain/Snow"
-    )
+        st.subheader("🌦️ Weather Information")
 
-    temp = st.slider(
-        "Temperature",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.5,
-        step=0.01
-    )
+        workingday = st.selectbox(
+            "Working Day",
+            options=[0, 1],
+            format_func=lambda x: "No" if x == 0 else "Yes"
+        )
 
-    hum = st.slider(
-        "Humidity",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.5,
-        step=0.01
-    )
+        weathersit = st.selectbox(
+            "Weather Situation",
+            options=[1, 2, 3, 4],
+            help=(
+                "1: Clear, 2: Mist, "
+                "3: Light Rain/Snow, "
+                "4: Heavy Rain/Snow"
+            )
+        )
 
-    windspeed = st.slider(
-        "Windspeed",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.2,
-        step=0.01
-    )
+        temp = st.slider(
+            "Temperature",
+            min_value=0.0,
+            max_value=1.0,
+            value=0.5,
+            step=0.01
+        )
+
+        hum = st.slider(
+            "Humidity",
+            min_value=0.0,
+            max_value=1.0,
+            value=0.5,
+            step=0.01
+        )
+
+        windspeed = st.slider(
+            "Windspeed",
+            min_value=0.0,
+            max_value=1.0,
+            value=0.2,
+            step=0.01
+        )
 
 
 # =========================================================
 # PREDICTION BUTTON
 # =========================================================
 
-st.divider()
+st.write("")
 
 predict_button = st.button(
     "🚀 Predict Bike Rentals",
@@ -217,8 +268,11 @@ predict_button = st.button(
 
 if predict_button:
 
-    payload = {
+    # -----------------------------------------------------
+    # API PAYLOAD
+    # -----------------------------------------------------
 
+    payload = {
         "season": season,
         "yr": yr,
         "mnth": mnth,
@@ -229,12 +283,14 @@ if predict_button:
         "temp": temp,
         "hum": hum,
         "windspeed": windspeed,
-
         "model": selected_model
     }
 
-
     try:
+
+        # -------------------------------------------------
+        # SEND REQUEST
+        # -------------------------------------------------
 
         with st.spinner("Making prediction..."):
 
@@ -254,90 +310,94 @@ if predict_button:
             result = response.json()
 
 
-            # =============================================
-            # ALL MODELS
-            # =============================================
+            # =================================================
+            # COMPARE ALL MODELS
+            # =================================================
 
             if selected_model == "all":
 
+                st.write("")
                 st.subheader("📈 Model Comparison")
 
                 predictions = result["predictions"]
 
                 col1, col2, col3 = st.columns(3)
 
+
+                # Multiple Linear Regression
                 with col1:
 
-                    st.metric(
-                        "Multiple Linear",
-                        f"{predictions['multiple_linear_regression']:,.0f}"
-                    )
+                    with st.container(border=True):
 
+                        st.metric(
+                            "📊 Multiple Linear",
+                            f"{predictions['multiple_linear_regression']:,.0f}"
+                        )
+
+
+                # Polynomial Regression
                 with col2:
 
-                    st.metric(
-                        "Polynomial",
-                        f"{predictions['polynomial_regression']:,.0f}"
-                    )
+                    with st.container(border=True):
 
+                        st.metric(
+                            "📈 Polynomial",
+                            f"{predictions['polynomial_regression']:,.0f}"
+                        )
+
+
+                # Random Forest Regression
                 with col3:
 
-                    st.metric(
-                        "Random Forest 🏆",
-                        f"{predictions['random_forest_regression']:,.0f}"
-                    )
+                    with st.container(border=True):
+
+                        st.metric(
+                            "🌳 Random Forest",
+                            f"{predictions['random_forest_regression']:,.0f}"
+                        )
 
 
+                st.write("")
+
+                # Best model
                 st.success(
-                    f"Recommended Model: "
+                    f"🏆 Recommended Model: "
                     f"{result['best_model']}"
                 )
 
 
-                st.markdown(
-                    f"""
-                    <div class="prediction-box">
+                # Recommended prediction
+                with st.container(border=True):
 
-                    <div>Recommended Prediction</div>
+                    st.subheader("🎯 Recommended Prediction")
 
-                    <div class="prediction-value">
-                    {result['recommended_prediction']:,.0f}
-                    </div>
-
-                    <div>bike rentals</div>
-
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                    st.metric(
+                        "🚲 Predicted Bike Rentals",
+                        f"{result['recommended_prediction']:,.0f}"
+                    )
 
 
-            # =============================================
+            # =================================================
             # SINGLE MODEL
-            # =============================================
+            # =================================================
 
             else:
 
+                st.write("")
                 st.subheader("🎯 Prediction Result")
 
                 prediction = result["prediction"]
 
-                st.markdown(
-                    f"""
-                    <div class="prediction-box">
+                with st.container(border=True):
 
-                    <div>{result['model']}</div>
+                    st.success(
+                        "Prediction completed successfully!"
+                    )
 
-                    <div class="prediction-value">
-                    {prediction:,.0f}
-                    </div>
-
-                    <div>Predicted Bike Rentals</div>
-
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                    st.metric(
+                        f"🚲 {result['model']}",
+                        f"{prediction:,.0f} bike rentals"
+                    )
 
 
         # =================================================
@@ -350,7 +410,13 @@ if predict_button:
                 f"API Error: {response.status_code}"
             )
 
-            st.json(response.json())
+            try:
+
+                st.json(response.json())
+
+            except Exception:
+
+                st.write(response.text)
 
 
     # =====================================================
@@ -364,10 +430,14 @@ if predict_button:
         )
 
         st.info(
-            "Start your backend using: "
-            "`uvicorn app:app --reload`"
+            "The backend may be unavailable or protected "
+            "by Vercel Authentication."
         )
 
+
+    # =====================================================
+    # TIMEOUT ERROR
+    # =====================================================
 
     except requests.exceptions.Timeout:
 
@@ -375,6 +445,10 @@ if predict_button:
             "⏱️ The backend request timed out."
         )
 
+
+    # =====================================================
+    # OTHER ERROR
+    # =====================================================
 
     except Exception as e:
 
@@ -384,14 +458,81 @@ if predict_button:
 
 
 # =========================================================
+# ABOUT THE MODELS
+# =========================================================
+
+st.write("")
+st.divider()
+
+st.subheader("🧠 About the Models")
+
+st.write("")
+
+
+col1, col2, col3 = st.columns(3, gap="medium")
+
+
+# =========================================================
+# MULTIPLE LINEAR REGRESSION
+# =========================================================
+
+with col1:
+
+    with st.container(border=True):
+
+        st.markdown("### 📊 Multiple Linear")
+
+        st.write(
+            "Uses multiple input features "
+            "to predict bike rental demand."
+        )
+
+
+# =========================================================
+# POLYNOMIAL REGRESSION
+# =========================================================
+
+with col2:
+
+    with st.container(border=True):
+
+        st.markdown("### 📈 Polynomial")
+
+        st.write(
+            "Captures nonlinear relationships "
+            "between features and demand."
+        )
+
+
+# =========================================================
+# RANDOM FOREST
+# =========================================================
+
+with col3:
+
+    with st.container(border=True):
+
+        st.markdown("### 🌳 Random Forest")
+
+        st.write(
+            "Uses multiple decision trees "
+            "to improve prediction performance."
+        )
+
+
+# =========================================================
 # FOOTER
 # =========================================================
 
+st.write("")
 st.divider()
 
 st.caption(
-    "Bike Sharing Demand Prediction • "
-    "Multiple Linear Regression • "
-    "Polynomial Regression • "
-    "Random Forest Regression"
+    "🚲 Bike Sharing Demand Prediction • "
+    "Machine Learning • FastAPI • Streamlit"
+)
+
+st.markdown(
+    "<center>Built by <b>Ratnesh Kumar</b> ❤️</center>",
+    unsafe_allow_html=True
 )
