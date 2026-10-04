@@ -1,6 +1,22 @@
 # 🚲 Bike Sharing Demand Predictor
 
-A machine learning project that predicts **bike-sharing demand** using weather, season, calendar, and working-day information. The project compares multiple regression approaches and exposes the trained models through a **FastAPI backend** with a **Streamlit frontend**.
+A machine learning project that predicts **bike-sharing demand** using weather, season, calendar, and working-day information. The project compares multiple regression approaches and serves the trained models through a **FastAPI backend** with a **Streamlit frontend**.
+
+## 🚀 Live Demo
+
+### 🖥️ Streamlit Frontend
+
+👉 **[Launch Bike Sharing Predictor](https://bike-sharing-predicter.streamlit.app/)**
+
+### ⚡ FastAPI Backend
+
+👉 **[Open Backend API](https://bike-sharing-predicter-backend-dhuhvepp8-rat7050s-projects.vercel.app/)**
+
+### 📚 API Documentation
+
+Interactive Swagger documentation:
+
+👉 **[Open API Docs](https://bike-sharing-predicter-backend-dhuhvepp8-rat7050s-projects.vercel.app/docs)**
 
 ## 📌 Project Overview
 
@@ -12,7 +28,7 @@ The project supports three regression models:
 - **Polynomial Regression (Degree 2)**
 - **Random Forest Regression**
 
-The prediction API can run an individual model or compare predictions from all three models. The current API recommends **Random Forest Regression** as the best model used by the application.
+The prediction API can run an individual model or compare predictions from all three models.
 
 ## ✨ Features
 
@@ -20,17 +36,18 @@ The prediction API can run an individual model or compare predictions from all t
 - 🤖 Multiple regression models
 - 🌲 Random Forest regression for nonlinear relationships
 - 🔌 FastAPI prediction backend
-- 🖥️ Streamlit user interface
+- 🖥️ Streamlit interactive frontend
 - 🔄 Compare predictions from all models
 - 💾 Saved models using Joblib
 - ❤️ Health-check API endpoint
-- 🧩 Modular backend, frontend, data, and model structure
+- 📚 Interactive Swagger API documentation
+- ☁️ Deployed frontend and backend
 
 ## 🧠 Machine Learning Models
 
 ### 1. Multiple Linear Regression
 
-Used as a simple and interpretable baseline model for understanding the relationship between input features and bike demand.
+Used as an interpretable baseline for understanding the relationship between input features and bike demand.
 
 ### 2. Polynomial Regression
 
@@ -38,11 +55,9 @@ A degree-2 polynomial model is used to capture nonlinear relationships that a si
 
 ### 3. Random Forest Regression
 
-An ensemble of decision trees that can model complex nonlinear relationships and interactions between features. It is used as the recommended model in the prediction API.
+An ensemble of decision trees that can model complex nonlinear relationships and feature interactions. It is the recommended model in the current prediction API.
 
 ## 📥 Input Features
-
-The prediction system uses the following features:
 
 | Feature | Description |
 |---|---|
@@ -80,7 +95,7 @@ Bike-sharing-predicter/
 └── README.md
 ```
 
-## 🔄 Workflow
+## 🔄 ML & Deployment Workflow
 
 ```text
 Historical Bike Sharing Data
@@ -89,7 +104,7 @@ Data Cleaning & Preprocessing
           ↓
 Exploratory Data Analysis
           ↓
-Feature Selection
+Feature Engineering
           ↓
 Train Regression Models
           ↓
@@ -104,6 +119,37 @@ Streamlit Frontend
 Bike Demand Prediction
 ```
 
+## 🔗 Application Architecture
+
+```text
+                    User
+                      │
+                      ▼
+          ┌─────────────────────┐
+          │  Streamlit Frontend │
+          │     Web Interface   │
+          └──────────┬──────────┘
+                     │ HTTP Request
+                     ▼
+          ┌─────────────────────┐
+          │    FastAPI Backend  │
+          │       /predict      │
+          └──────────┬──────────┘
+                     │
+                     ▼
+          ┌─────────────────────┐
+          │    ML Prediction    │
+          │                     │
+          │  • Linear Regression│
+          │  • Polynomial       │
+          │  • Random Forest    │
+          └──────────┬──────────┘
+                     │
+                     ▼
+             Bike Demand
+               Prediction
+```
+
 ## ⚙️ Tech Stack
 
 - **Python**
@@ -116,8 +162,8 @@ Bike Demand Prediction
 - **Uvicorn** – ASGI server
 - **Streamlit** – frontend interface
 - **Jupyter Notebook** – experimentation and analysis
-
-The repository's dependency file includes FastAPI, Uvicorn, Streamlit, Requests, Scikit-learn, Pandas, NumPy, Joblib, and Pydantic.
+- **Vercel** – backend deployment
+- **Streamlit Community Cloud** – frontend deployment
 
 ## 🚀 Getting Started
 
@@ -152,21 +198,19 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## ▶️ Run the Backend
-
-Start the FastAPI server from the project root:
+## ▶️ Run the Backend Locally
 
 ```bash
 uvicorn backend.main:app --reload
 ```
 
-The API will normally be available at:
+The local API will normally be available at:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-FastAPI also provides interactive API documentation at:
+Swagger documentation:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -223,15 +267,15 @@ all
 
 Selecting `all` returns predictions from all three models and the application's recommended prediction.
 
-## 🖥️ Run the Streamlit Frontend
+## 🖥️ Run the Streamlit Frontend Locally
 
-After starting the FastAPI backend, open another terminal and run:
+After starting the FastAPI backend, open another terminal:
 
 ```bash
 streamlit run fronted/app.py
 ```
 
-The Streamlit application provides a user-friendly interface for entering bike-sharing conditions and obtaining predictions from the trained models.
+The Streamlit application provides an interactive interface for entering bike-sharing conditions and obtaining predictions.
 
 > **Note:** Make sure the frontend is configured to use the correct FastAPI backend URL before running the application.
 
@@ -247,7 +291,7 @@ The notebook can be used to inspect the dataset, perform preprocessing and explo
 
 ## 🎯 Use Cases
 
-This type of prediction system can support:
+This prediction system can support:
 
 - Bike fleet allocation
 - Demand forecasting
@@ -256,39 +300,31 @@ This type of prediction system can support:
 - Seasonal demand analysis
 - Weather-aware bike availability planning
 
+## 📸 Demo Screenshot
+
+Add your Streamlit application screenshot here:
+
+```text
+images/bike-sharing-predictor.png
+```
+
+Then display it in this section with:
+
+```markdown
+![Bike Sharing Predictor Demo](images/bike-sharing-predictor.png)
+```
+
 ## 🔮 Future Improvements
 
-- Add more regression algorithms such as Gradient Boosting, XGBoost, and HistGradientBoosting
-- Add model evaluation metrics such as MAE, MSE, RMSE, and R² to the application
-- Add visual comparison of model performance
+- Add Gradient Boosting, XGBoost, and other advanced regression models
+- Add MAE, MSE, RMSE, and R² comparison to the application
+- Add model-performance visualizations
 - Add prediction confidence/uncertainty information
 - Add historical demand charts
 - Improve feature engineering with date/time variables
-- Containerize the application with Docker
-- Deploy the FastAPI backend and Streamlit frontend
 - Add automated model retraining
 - Add API authentication and production monitoring
-
-## 📸 Demo
-
-Add screenshots of the Streamlit application here:
-
-```markdown
-![Bike Sharing Predictor Demo](path/to/your-screenshot.png)
-```
-
-For example, you can create an `images` folder:
-
-```text
-images/
-└── bike-predictor-demo.png
-```
-
-Then use:
-
-```markdown
-![Bike Sharing Predictor Demo](images/bike-predictor-demo.png)
-```
+- Add Docker support
 
 ## 👨‍💻 Author
 
